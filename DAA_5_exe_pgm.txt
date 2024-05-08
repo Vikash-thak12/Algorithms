@@ -1,0 +1,119 @@
+5a.Find all cliques of size K in an undirected graph.
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class CliqueFinder {
+    private static List<Set<Integer>> cliques = new ArrayList<>();
+    private static int K;
+
+    public static void main(String[] args) {
+        // Example graph represented as an adjacency matrix
+        int[][] graph = {
+            {0, 1, 1, 0, 0},
+            {1, 0, 1, 1, 0},
+            {1, 1, 0, 1, 1},
+            {0, 1, 1, 0, 1},
+            {0, 0, 1, 1, 0}
+        };
+        K = 3; // Size of cliques to find
+
+        findCliques(graph);
+
+        System.out.println("Cliques of size " + K + ":");
+        for (Set<Integer> clique : cliques) {
+            System.out.println(clique);
+        }
+    }
+
+    public static void findCliques(int[][] graph) {
+        int numVertices = graph.length;
+        boolean[] visited = new boolean[numVertices];
+        Set<Integer> potentialClique = new HashSet<>();
+        Set<Integer> candidates = new HashSet<>();
+        for (int i = 0; i < numVertices; i++) {
+            candidates.add(i);
+        }
+        findCliquesRecursive(graph, visited, potentialClique, candidates);
+    }
+
+    public static void findCliquesRecursive(int[][] graph, boolean[] visited, Set<Integer> potentialClique, Set<Integer> candidates) {
+        if (candidates.isEmpty() && potentialClique.size() >= K) {
+            cliques.add(new HashSet<>(potentialClique));
+            return;
+        }
+
+        for (Integer candidate : new HashSet<>(candidates)) {
+            potentialClique.add(candidate);
+            Set<Integer> newCandidates = new HashSet<>();
+            for (Integer neighbor : candidates) {
+                if (graph[candidate][neighbor] == 1) {
+                    newCandidates.add(neighbor);
+                }
+            }
+            candidates.remove(candidate);
+            findCliquesRecursive(graph, visited, potentialClique, newCandidates);
+            potentialClique.remove(candidate);
+        }
+    }
+}
+-------------------------------------------------
+5b.Given a small graph with N nodes and E edges, the task is to find the
+maximum clique in the given graph. i.e., when an edge is added to the
+present list, check that by adding that edge to the present list, does it still
+form a clique or not, if the vertices are added until the list does not form a
+clique. Then, the list is backtracked to find a larger subset which forms a
+clique using Recursion (Maximal Clique Problem).
+
+import java.util.*;
+
+public class MaximalCliqueFinder {
+    private static List<Set<Integer>> maximalCliques = new ArrayList<>();
+
+    public static void main(String[] args) {
+        // Example graph represented as an adjacency matrix
+        int[][] graph = {
+            {0, 1, 1, 0, 0},
+            {1, 0, 1, 1, 0},
+            {1, 1, 0, 1, 1},
+            {0, 1, 1, 0, 1},
+            {0, 0, 1, 1, 0}
+        };
+
+        findMaximalCliques(graph);
+
+        System.out.println("Maximal Cliques:");
+        for (Set<Integer> clique : maximalCliques) {
+            System.out.println(clique);
+        }
+    }
+
+    public static void findMaximalCliques(int[][] graph) {
+        int numVertices = graph.length;
+        boolean[] visited = new boolean[numVertices];
+        Set<Integer> potentialClique = new HashSet<>();
+        Set<Integer> candidates = new HashSet<>();
+        for (int i = 0; i < numVertices; i++) {
+            candidates.add(i);
+        }
+        bronKerbosch(graph, visited, potentialClique, candidates);
+    }
+
+    public static void bronKerbosch(int[][] graph, boolean[] visited, Set<Integer> potentialClique, Set<Integer> candidates) {
+        if (candidates.isEmpty() && potentialClique.size() > 0) {
+            maximalCliques.add(new HashSet<>(potentialClique));
+            return;
+        }
+
+        for (Integer candidate : new HashSet<>(candidates)) {
+            Set<Integer> newCandidates = new HashSet<>(candidates);
+            Set<Integer> newPotentialClique = new HashSet<>(potentialClique);
+            newCandidates.retainAll(Arrays.asList(graph[candidate]));
+            newPotentialClique.add(candidate);
+            bronKerbosch(graph, visited, newPotentialClique, newCandidates);
+            candidates.remove(candidate);
+            potentialClique.add(candidate);
+        }
+    }
+}
