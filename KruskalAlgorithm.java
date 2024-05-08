@@ -88,3 +88,5 @@ public class KruskalAlgorithm {
         kruskalMST(edges, vertices);
     }
 }
+
+
