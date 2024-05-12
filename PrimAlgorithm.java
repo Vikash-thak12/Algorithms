@@ -16,6 +16,8 @@ class Edge implements Comparable<Edge> {
     }
 }
 
+
+// Main function of the code
 public class PrimAlgorithm {
 
     public static void primMST(int[][] graph) {
@@ -44,6 +46,7 @@ public class PrimAlgorithm {
             }
         }
 
+        // Calling the primMst Function
         printMST(parent, graph);
     }
 
@@ -54,6 +57,7 @@ public class PrimAlgorithm {
         }
     }
 
+    // Actual input i am giving which is the graph
     public static void main(String[] args) {
         int[][] graph = {
                 {0, 2, 0, 6, 0},
